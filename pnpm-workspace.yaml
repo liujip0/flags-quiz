@@ -4,5 +4,3 @@ allowBuilds:
   workerd: true
 minimumReleaseAgeExclude:
   - "@liujip0/prettier-config@1.0.1"
-packages:
-  - .
