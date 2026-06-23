@@ -15,8 +15,13 @@
     "create-migration": "wrangler d1 migrations create quizzes-db"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.0",
+    "@trpc/client": "^11.18.0",
+    "@trpc/server": "^11.18.0",
+    "@trpc/tanstack-react-query": "^11.18.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
