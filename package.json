@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-types": "wrangler types",
-    "type-check": "generate-types && tsc"
+    "type-check": "generate-types && tsc",
+    "d1": "wrangler d1",
+    "create-migration": "wrangler d1 migrations create quizzes-db"
   },
   "dependencies": {
     "react": "^19.2.6",
