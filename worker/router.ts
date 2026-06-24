@@ -1,7 +1,9 @@
-import { publicProcedure, router } from "./trpc";
+import { authRouter } from "./auth/router.ts";
+import { publicProcedure, router } from "./trpc.ts";
 
 export const appRouter = router({
   greeting: publicProcedure.query(() => "hello tRPC v11!"),
+  auth: authRouter,
 });
 
 // Export only the type of a router!

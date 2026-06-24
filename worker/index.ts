@@ -3,7 +3,7 @@ import { createContext } from "./context.ts";
 import { appRouter } from "./router.ts";
 
 export default {
-  fetch(request) {
+  fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/api/")) {
@@ -11,10 +11,10 @@ export default {
         endpoint: "/api",
         req: request,
         router: appRouter,
-        createContext,
+        createContext: (opts) => createContext(opts, env),
       });
     }
 
     return new Response(null, { status: 404 });
   },
-} satisfies ExportedHandler;
+} satisfies ExportedHandler<Env>;
