@@ -1,9 +1,9 @@
-import zod from "zod";
-import { publicProcedure } from "../trpc.ts";
-import type { User } from "../../types/Users.ts";
 import { TRPCError } from "@trpc/server";
 import * as argon2 from "node-argon2";
-import { generateToken } from "./tokens.ts";
+import zod from "zod";
+import type { User } from "../../types/Users.ts";
+import { publicProcedure } from "../trpc.ts";
+import { generateSetCookie } from "./tokens.ts";
 
 export const login = publicProcedure
   .input(zod.object({ username: zod.string(), password: zod.string() }))
@@ -32,5 +32,10 @@ export const login = publicProcedure
       throw unauthorizedError;
     }
 
-    return generateToken(input.username, user.secret, JWT_SECRET);
+    ctx.resHeaders.set(
+      "Set-Cookie",
+      generateSetCookie(input.username, user.secret, JWT_SECRET),
+    );
+
+    return true;
   });

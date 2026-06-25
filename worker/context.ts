@@ -1,4 +1,5 @@
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
+import { parseCookie } from "cookie";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import type { User } from "../types/Users.ts";
 import "../worker-configuration.d.ts";
@@ -8,7 +9,7 @@ export async function createContext(
   { req, resHeaders }: FetchCreateContextFnOptions,
   env: Env,
 ) {
-  const token = req.headers.get("Authorization")?.split(" ")[1] ?? "";
+  const token = parseCookie(req.headers.get("Cookie") ?? "").token ?? "";
 
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as TokenPayload;

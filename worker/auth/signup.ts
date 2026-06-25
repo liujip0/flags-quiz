@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import * as argon2 from "node-argon2";
 import zod from "zod";
 import { publicProcedure } from "../trpc.ts";
-import { generateToken } from "./tokens.ts";
+import { generateSetCookie } from "./tokens.ts";
 
 export const signup = publicProcedure
   .input(zod.object({ username: zod.string(), password: zod.string() }))
@@ -38,5 +38,10 @@ export const signup = publicProcedure
       });
     }
 
-    return generateToken(input.username, secret, JWT_SECRET);
+    ctx.resHeaders.set(
+      "Set-Cookie",
+      generateSetCookie(input.username, secret, JWT_SECRET),
+    );
+
+    return true;
   });
