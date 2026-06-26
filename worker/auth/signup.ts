@@ -43,5 +43,5 @@ export const signup = publicProcedure
       generateSetCookie(input.username, secret, JWT_SECRET),
     );
 
-    return true;
+    return input.username;
   });

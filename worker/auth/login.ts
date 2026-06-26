@@ -37,5 +37,5 @@ export const login = publicProcedure
       generateSetCookie(input.username, user.secret, JWT_SECRET),
     );
 
-    return true;
+    return input.username;
   });
