@@ -1,8 +1,13 @@
 import { TRPCError } from "@trpc/server";
-import * as argon2 from "node-argon2";
+import { argon2id, setWASMModules } from "argon2-wasm-edge";
+import argon2WASM from "argon2-wasm-edge/wasm/argon2.wasm.json";
+import blake2bWASM from "argon2-wasm-edge/wasm/blake2b.wasm.json";
+import * as crypto from "node:crypto";
 import zod from "zod";
 import { publicProcedure } from "../trpc.ts";
 import { generateSetCookie } from "./tokens.ts";
+
+setWASMModules({ argon2WASM, blake2bWASM });
 
 export const signup = publicProcedure
   .input(zod.object({ username: zod.string(), password: zod.string() }))
@@ -20,7 +25,15 @@ export const signup = publicProcedure
     }
 
     // * Hash params: https://www.rfc-editor.org/rfc/rfc9106.html#name-parameter-choice
-    const hash = await argon2.hash(input.password);
+    const hash = await argon2id({
+      password: input.password,
+      salt: crypto.getRandomValues(new Uint8Array(16)), // 128 bits
+      iterations: 1,
+      parallelism: 4,
+      memorySize: 2 ** 21, // 2 GiB
+      hashLength: 32, // 256 bits
+      outputType: "encoded",
+    });
 
     // Used to invalidate already-issued session tokens if needed
     const secret = crypto.getRandomValues(new Uint8Array(8)).toBase64(); // 64 bits

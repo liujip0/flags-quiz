@@ -1,9 +1,13 @@
 import { TRPCError } from "@trpc/server";
-import * as argon2 from "node-argon2";
+import { argon2Verify, setWASMModules } from "argon2-wasm-edge";
+import argon2WASM from "argon2-wasm-edge/wasm/argon2.wasm.json";
+import blake2bWASM from "argon2-wasm-edge/wasm/blake2b.wasm.json";
 import zod from "zod";
 import type { User } from "../../types/Users.ts";
 import { publicProcedure } from "../trpc.ts";
 import { generateSetCookie } from "./tokens.ts";
+
+setWASMModules({ argon2WASM, blake2bWASM });
 
 export const login = publicProcedure
   .input(zod.object({ username: zod.string(), password: zod.string() }))
@@ -23,7 +27,7 @@ export const login = publicProcedure
       throw unauthorizedError;
     }
 
-    const verify = await argon2.verify({
+    const verify = await argon2Verify({
       hash: user.password,
       password: input.password,
     });
